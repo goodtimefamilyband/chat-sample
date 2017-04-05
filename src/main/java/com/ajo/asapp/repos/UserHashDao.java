@@ -4,6 +4,8 @@ import com.ajo.asapp.entities.User;
 
 public class UserHashDao extends HashDao<User, Integer> implements UserDao {
 
+  private int nextId;
+  
   @Override
   public User getForName(String name) {
     // Slow, but only using for testing
@@ -14,6 +16,12 @@ public class UserHashDao extends HashDao<User, Integer> implements UserDao {
     }
     
     return null;
+  }
+
+  @Override
+  protected Integer getNextId() {
+    // TODO Auto-generated method stub
+    return nextId++;
   }
   
 }
