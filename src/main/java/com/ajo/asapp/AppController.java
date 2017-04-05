@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.ajo.asapp.entities.Message;
 import com.ajo.asapp.repos.MessageDao;
@@ -34,9 +36,16 @@ public class AppController {
     return "app";
   }
   
-  @GetMapping(value="app/messages", produces=MediaType.APPLICATION_JSON_VALUE)
+  @GetMapping(value="/app/messages", produces=MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<Collection<Message>> getMessages() {
     return new ResponseEntity<>(this.messageDao.getAll(), HttpStatus.OK);
+  }
+  
+  @PostMapping("/app/messages")
+  public void postMessage(@RequestParam("msg") String msg) {
+    Message m = new Message();
+    m.setText(msg);
+    messageDao.add(m);
   }
   
 }
