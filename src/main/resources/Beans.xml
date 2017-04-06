@@ -18,7 +18,7 @@
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
         <property name="url" value="jdbc:mysql://localhost:3306/asapp"/>
         <property name="username" value="asapp"/>
-        <property name="password" value="vune222rvn23uerv498"/>
+        <property name="password" value="vjauir934vrj"/>
     </bean>
     
     <mvc:resources mapping="/resources/**" location="/resources/page/"
