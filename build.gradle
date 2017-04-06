@@ -69,6 +69,8 @@ dependencies {
     compile("org.springframework:spring-jdbc:4.3.3.RELEASE")
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '1.4.2.RELEASE'
     
+    compile("commons-dbcp:commons-dbcp:1.4")
+	compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.6'
     
 	providedCompile "javax.servlet.jsp:jsp-api:2.2"
 	
