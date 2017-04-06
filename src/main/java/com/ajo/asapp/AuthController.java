@@ -58,4 +58,9 @@ public class AuthController {
     return "create";
   }
   
+  @GetMapping("/logout")
+  public String logout() {
+    return "logout";
+  }
+  
 }
