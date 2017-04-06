@@ -7,6 +7,8 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.simple.AbstractJdbcInsert;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import com.ajo.asapp.entities.AbstractIdItem;
@@ -24,12 +26,22 @@ public abstract class AbstractIdDaoMySQL<ObjType extends AbstractIdItem<IdType>,
   
   protected JdbcTemplate jdbcTemplate;
   
-  @Autowired
+  protected SimpleJdbcInsert adder;
+  protected String tbl;
+  protected String id_col;
+  
   public void setDataSource(DataSource dataSource) {
     this.jdbcTemplate = new JdbcTemplate(dataSource);
+    
+    this.adder = new SimpleJdbcInsert(dataSource)
+    .withTableName(this.tbl)
+    .usingGeneratedKeyColumns(this.id_col);
   }
   
   protected final void buildQueryBases(String tbl, String id_col) {
+    
+    this.tbl = tbl;
+    this.id_col = id_col;
     
     obj_for_id_sql = OBJ_FOR_ID_SQL
         .replace(":tbl", tbl)
@@ -43,7 +55,7 @@ public abstract class AbstractIdDaoMySQL<ObjType extends AbstractIdItem<IdType>,
     buildQueryBases(tbl, id_col);
   }
   
-  public ObjType getForId(long id, RowMapper<ObjType> mapper) {
+  public ObjType getForId(IdType id, RowMapper<ObjType> mapper) {
     List<ObjType> objList = this.jdbcTemplate.query(obj_for_id_sql, new Object[]{id}, mapper);
     if(objList.size() == 0) {
       return null;

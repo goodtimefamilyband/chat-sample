@@ -23,5 +23,10 @@ public class UserHashDao extends HashDao<User, Integer> implements UserDao {
     // TODO Auto-generated method stub
     return nextId++;
   }
+
+  @Override
+  public void setPassword(User u, String password) {
+    
+  }
   
 }

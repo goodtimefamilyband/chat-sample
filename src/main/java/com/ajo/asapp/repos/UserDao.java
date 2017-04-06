@@ -6,4 +6,6 @@ public interface UserDao extends AbstractIdDao<User, Integer>{
   
   public User getForName(String name);
   
+  public void setPassword(User u, String password);
+  
 }
