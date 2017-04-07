@@ -7,12 +7,19 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.jdbc.JdbcDaoImpl;
 
+import com.ajo.asapp.repos.UserDao;
+import com.ajo.asapp.repos.UserMySQLDao;
+
 @Configuration
 public class AuthConfig {
 
   @Autowired
   private DriverManagerDataSource dataSource;
-
+  
+  
+  @Autowired
+  private UserDao userDao;
+  
   private static final String USERS_BY_USERNAME_SQL = 
       "SELECT username, password, enabled FROM users WHERE username = ?";
   
@@ -26,12 +33,7 @@ public class AuthConfig {
   
   @Bean(name="userDetailsService")
   public UserDetailsService userDetailsService(){
-    System.out.println("Datasource: " + this.dataSource.getUrl());
-    JdbcDaoImpl jdbcImpl = new JdbcDaoImpl();
-    jdbcImpl.setDataSource(this.dataSource);
-    jdbcImpl.setUsersByUsernameQuery(USERS_BY_USERNAME_SQL);
-    jdbcImpl.setAuthoritiesByUsernameQuery(AUTHORITIES_BY_USERNAME_SQL);
-    return jdbcImpl;
+    return userDao;
   }
   
 }
