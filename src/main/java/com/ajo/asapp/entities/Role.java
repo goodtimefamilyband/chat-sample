@@ -1,6 +1,8 @@
 package com.ajo.asapp.entities;
 
-public class Role extends AbstractIdItem<Integer> {
+import org.springframework.security.core.GrantedAuthority;
+
+public class Role extends AbstractIdItem<Integer> implements GrantedAuthority {
   
   private String name;
 
@@ -10,5 +12,11 @@ public class Role extends AbstractIdItem<Integer> {
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  @Override
+  public String getAuthority() {
+    // TODO Auto-generated method stub
+    return name;
   }
 }

@@ -6,15 +6,19 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
 import com.ajo.asapp.entities.User;
 
 @Repository("userDao")
-public class UserMySQLDao extends AbstractIdDaoMySQL<User, Integer> implements UserDao{
+public class UserMySQLDao extends AbstractIdDaoMySQL<User, Integer> implements UserDao, UserDetailsService {
 
   private static final String USERID_FOR_USERNAME_SQL =
       "SELECT id FROM users WHERE username = ?";
@@ -25,6 +29,7 @@ public class UserMySQLDao extends AbstractIdDaoMySQL<User, Integer> implements U
   private static final String SET_PASSWORD_SQL =
       "UPDATE users SET password = ? WHERE id = ?";
   
+  @Lazy
   @Autowired
   private PasswordEncoder passwordEncoder;
   
@@ -38,7 +43,7 @@ public class UserMySQLDao extends AbstractIdDaoMySQL<User, Integer> implements U
     this.adder.usingColumns("username");
   }
   
-  protected UserMySQLDao() {
+  public UserMySQLDao() {
     super("users", "id");
     this.obj_for_id_sql += " AND enabled = TRUE";
   }
@@ -73,6 +78,9 @@ public class UserMySQLDao extends AbstractIdDaoMySQL<User, Integer> implements U
       User u = new User();
       u.setId(rs.getInt("id"));
       u.setName(rs.getString("username"));
+      u.setEnabled(rs.getBoolean("enabled"));
+      u.setPassword(rs.getString("password"));
+      u.setAuthorities(UserMySQLDao.this.roleDao.getRolesForUser(u));
       return u;
     }
     
@@ -83,6 +91,11 @@ public class UserMySQLDao extends AbstractIdDaoMySQL<User, Integer> implements U
     String cpass = passwordEncoder.encode(password);
     
     this.jdbcTemplate.update(SET_PASSWORD_SQL, cpass, u.getId());
+  }
+
+  @Override
+  public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    return this.getForName(username);
   }
 
 }

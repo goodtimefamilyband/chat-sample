@@ -1,5 +1,8 @@
 package com.ajo.asapp.repos;
 
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
 import com.ajo.asapp.entities.User;
 
 public class UserHashDao extends HashDao<User, Integer> implements UserDao {
@@ -27,6 +30,12 @@ public class UserHashDao extends HashDao<User, Integer> implements UserDao {
   @Override
   public void setPassword(User u, String password) {
     
+  }
+
+  @Override
+  public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    // TODO Auto-generated method stub
+    return null;
   }
   
 }

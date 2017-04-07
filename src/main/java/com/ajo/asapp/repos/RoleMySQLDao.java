@@ -2,6 +2,7 @@ package com.ajo.asapp.repos;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -21,6 +22,12 @@ public class RoleMySQLDao extends AbstractIdDaoMySQL<Role, Integer> implements R
   
   private static final String ROLE_FOR_NAME_SQL =
       "SELECT * FROM roles WHERE " + COL_ROLENAME + " = ?";
+  
+  private static final String ROLES_FOR_USER_SQL =
+      "SELECT * FROM roles r"
+      + " INNER JOIN role_user ru ON r.id = ru.roleid"
+      + " INNER JOIN users u ON ru.userid = u.id"
+      + " WHERE u.id = ?";
   
   protected RoleMySQLDao() {
     super("roles", "id");
@@ -92,6 +99,12 @@ public class RoleMySQLDao extends AbstractIdDaoMySQL<Role, Integer> implements R
       return r;
     }
     
+  }
+
+  @Override
+  public Collection<Role> getRolesForUser(User u) {
+    List<Role> roles = this.jdbcTemplate.query(ROLES_FOR_USER_SQL, new Object[]{u.getId()}, new RoleMapper());
+    return roles;
   }
 
 }
