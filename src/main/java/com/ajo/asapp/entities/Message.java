@@ -8,6 +8,9 @@ public class Message extends AbstractIdItem<Long>{
   private int userId;
   private Date posted;
   
+  //nullable
+  private Integer recipient;
+  
   public String getText() {
     return text;
   }
@@ -30,6 +33,14 @@ public class Message extends AbstractIdItem<Long>{
 
   public void setPosted(Date posted) {
     this.posted = posted;
+  }
+
+  public Integer getRecipient() {
+    return recipient;
+  }
+
+  public void setRecipient(Integer recipient) {
+    this.recipient = recipient;
   }
   
 }
