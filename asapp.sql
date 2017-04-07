@@ -29,7 +29,7 @@ CREATE TABLE role_user (
 CREATE TABLE messages (
 	id INT PRIMARY KEY AUTO_INCREMENT,
 	author INT NOT NULL,
-	text VARCHAR(255) NOT NULL,
+	text TEXT NOT NULL,
 	posted TIMESTAMP DEFAULT NOW(),
 	recipient INT,
 	FOREIGN KEY (author) REFERENCES users (id)
