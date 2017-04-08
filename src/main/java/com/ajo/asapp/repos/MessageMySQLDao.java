@@ -53,7 +53,7 @@ public class MessageMySQLDao extends AbstractIdDaoMySQL<Message, Long> implement
   @Override
   public Collection<Message> getAll() {
     // TODO Auto-generated method stub
-    return null;
+    return super.getAll(new MessageRowMapper());
   }
 
   public class MessageRowMapper implements RowMapper<Message> {

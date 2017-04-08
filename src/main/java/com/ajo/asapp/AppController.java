@@ -1,7 +1,9 @@
 package com.ajo.asapp;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -50,8 +52,10 @@ public class AppController {
   }
   
   @GetMapping(value="/app/messages", produces=MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<Collection<Message>> getMessages() {
-    return new ResponseEntity<>(this.messageDao.getAll(), HttpStatus.OK);
+  public ResponseEntity<Map<String, Object>> getMessages() {
+    Map<String, Object> m = new HashMap<>();
+    m.put("messages", this.messageDao.getAll());
+    return new ResponseEntity<>(m, HttpStatus.OK);
   }
   
   @PostMapping("/app/messages")
