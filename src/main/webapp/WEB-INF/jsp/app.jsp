@@ -14,10 +14,28 @@
     		<button id="btnMsg" name="submsg" type="submit" class="btn btn-success">Send</button>
     	</form>
     	<script type="text/javascript">
-    		var client = new AsappClient();
+    		var client = new AsappClient({
+    			onMessage: function (message) {
+    				console.log(message);
+    	        	$('#messages').append(message);
+    	        },
+    	        onModel: function(model) {
+    	        	console.log(model);
+    	        	for(i in model.messages) {
+    	        		$('#messages').append(model.messages[i]);
+    	        	}
+    	        }
+    		});
     		
+    		/*
     		$('#msgForm').ajaxForm(function() {
     			console.log('Message submitted');
+    		});
+    		*/
+    		
+    		$('#msgForm').submit(function() {
+    			$(this).ajaxSubmit();
+    			return false;
     		});
     	</script>
     </jsp:body>
