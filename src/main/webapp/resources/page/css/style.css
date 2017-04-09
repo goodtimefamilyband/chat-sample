@@ -24,5 +24,6 @@ html, body {
 }
 
 #msgForm {
-	
+	margin: 2rem 0;
+	display: flex;
 }
