@@ -40,7 +40,7 @@ public class UserMySQLDao extends AbstractIdDaoMySQL<User, Integer> implements U
   public void setDataSource(DriverManagerDataSource dataSource) {
     super.setDataSource(dataSource);
     
-    this.adder.usingColumns("username");
+    this.adder.usingColumns("username", "created");
   }
   
   public UserMySQLDao() {
@@ -52,6 +52,7 @@ public class UserMySQLDao extends AbstractIdDaoMySQL<User, Integer> implements U
   public void add(User o) {
     HashMap<String, Object> args = new HashMap<>();
     args.put("username", o.getName());
+    args.put("created", System.currentTimeMillis() / 1000);
     Number id = this.adder.executeAndReturnKey(args);
     o.setId(id.intValue());
   }

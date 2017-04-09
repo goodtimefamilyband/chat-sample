@@ -1,8 +1,10 @@
+/* Requires MySQL 5.6+ */
+
 CREATE TABLE users (
 	id INT PRIMARY KEY AUTO_INCREMENT,
 	username VARCHAR(255) NOT NULL UNIQUE,
 	password VARCHAR(255),
-	created TIMESTAMP DEFAULT NOW(),
+	created BIGINT NOT NULL,
 	enabled BIT DEFAULT TRUE
 );
 
@@ -30,7 +32,7 @@ CREATE TABLE messages (
 	id INT PRIMARY KEY AUTO_INCREMENT,
 	author INT NOT NULL,
 	text TEXT NOT NULL,
-	posted TIMESTAMP DEFAULT NOW(),
+	posted BIGINT NOT NULL,
 	recipient INT,
 	FOREIGN KEY (author) REFERENCES users (id)
 		ON UPDATE CASCADE

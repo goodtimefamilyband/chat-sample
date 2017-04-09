@@ -65,8 +65,10 @@ public class AppController {
       @RequestParam("msg") String msg) {
     System.out.println("Got message "+ msg);
     Message m = new Message();
+    m.setPosted(System.currentTimeMillis() / 1000);
     m.setText(msg);
-    m.setUserId(u.getId());
+    m.setAuthorId(u.getId());
+    m.setAuthorName(u.getName());
     messageDao.add(m);
     
     this.template.convertAndSend("/app/messaging", m);

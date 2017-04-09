@@ -28,7 +28,7 @@ sudo apt-get install oracle-java8-installer -y
 sudo apt-get install ant -y
 
 apt-get install --yes git \
-    mysql-server \
+    mysql-server-5.6 \
 
 echo "CREATE USER '$db_usr' IDENTIFIED BY '$db_pw'" | mysql --user=$db_su --password=$db_su_pw
 echo "CREATE DATABASE $db" | mysql --user=$db_su --password=$db_su_pw

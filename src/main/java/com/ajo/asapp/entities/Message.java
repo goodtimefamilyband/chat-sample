@@ -1,12 +1,13 @@
 package com.ajo.asapp.entities;
 
-import java.sql.Date;
+import java.text.DateFormat;
 
 public class Message extends AbstractIdItem<Long>{
 
   private String text;
-  private int userId;
-  private Date posted;
+  private Long posted;
+  private int authorId;
+  private String authorName;
   
   //nullable
   private Integer recipient;
@@ -19,19 +20,11 @@ public class Message extends AbstractIdItem<Long>{
     this.text = text;
   }
   
-  public int getUserId() {
-    return userId;
-  }
-  
-  public void setUserId(int userId) {
-    this.userId = userId;
-  }
-
-  public Date getPosted() {
+  public long getPosted() {
     return posted;
   }
-
-  public void setPosted(Date posted) {
+  
+  public void setPosted(long posted) {
     this.posted = posted;
   }
 
@@ -41,6 +34,22 @@ public class Message extends AbstractIdItem<Long>{
 
   public void setRecipient(Integer recipient) {
     this.recipient = recipient;
+  }
+
+  public int getAuthorId() {
+    return authorId;
+  }
+
+  public void setAuthorId(int authorId) {
+    this.authorId = authorId;
+  }
+
+  public String getAuthorName() {
+    return authorName;
+  }
+
+  public void setAuthorName(String authorName) {
+    this.authorName = authorName;
   }
   
 }
