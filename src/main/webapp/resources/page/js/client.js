@@ -23,7 +23,7 @@ var AsappClient = function(opts) {
 		msgDiv.append(authorSpan);
 		
 		var txtSpan = $(document.createElement('span'));
-		txtSpan.html(message.text);
+		txtSpan.html(message.html);
 		msgDiv.append(txtSpan);
 		
 		return msgDiv;
