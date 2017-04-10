@@ -56,10 +56,13 @@ repositories {
     
 }
 
+configurations {
+//	runtime.exclude module: 'logback-classic'
+	runtime.exclude module: 'slf4j-simple'
+}
+
 // In this section you declare the dependencies for your production and test code
 dependencies {
-    // The production code uses the SLF4J logging API at compile time
-    compile 'org.slf4j:slf4j-api:1.7.21'
     
     compile("javax.servlet:jstl")
     
@@ -77,6 +80,7 @@ dependencies {
     compile("org.webjars:sockjs-client:1.0.2")
 	compile("org.webjars:stomp-websocket:2.3.3")
     
+    compile ('eu.michael-simons:java-oembed:0.5.8')
     
 	providedCompile "javax.servlet.jsp:jsp-api:2.2"
 	
