@@ -13,6 +13,12 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.http.Header;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpHead;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -44,7 +50,7 @@ import com.ajo.asapp.repos.UserHashDao;
 @Controller
 public class AppController {
 
-  public static final String MSG_TYPE_IMG = "image";
+  public static final String MSG_TYPE_IMG = "type";
   public static final String MSG_TYPE_VID = "video";
   
   @Autowired
@@ -150,6 +156,16 @@ public class AppController {
     try {
       // Checking if URL is valid
       URL url = new URL(txt);
+      HttpClient client = new DefaultHttpClient();
+      HttpResponse resp = client.execute(new HttpHead(txt));
+      Header contentType = resp.getFirstHeader("Content-Type");
+      if(contentType.getValue().startsWith("image/")) {//.matches("image/.*")) {
+        ImageMessage im = new ImageMessage();
+        im.setWidth(300);
+        im.setHeight(300);
+        return im;
+      }
+      
       Optional<OembedResponse> optresp = this.oembedService.getOembedResponseFor(txt);      
       if(optresp.isPresent()) {
         return this.buildMessage(optresp.get());
@@ -160,6 +176,12 @@ public class AppController {
       // TODO Auto-generated catch block
       //e.printStackTrace();
       
+    } catch (ClientProtocolException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
     }
     return new TextMessage();
   }
