@@ -1,8 +1,8 @@
-package com.ajo.asapp.entities;
+package com.ajo.asapp.entities.message;
 
-import java.text.DateFormat;
+import com.ajo.asapp.entities.AbstractIdItem;
 
-public class Message extends AbstractIdItem<Long>{
+public abstract class Message extends AbstractIdItem<Long>{
 
   private String text;
   private Long posted;
@@ -51,5 +51,7 @@ public class Message extends AbstractIdItem<Long>{
   public void setAuthorName(String authorName) {
     this.authorName = authorName;
   }
+  
+  public abstract String getHtml();
   
 }
