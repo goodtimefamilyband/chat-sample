@@ -23,6 +23,8 @@ public class MessageMySQLDao extends AbstractIdDaoMySQL<Message, Long> implement
   private static final String UTBL = "users";
   private static final String M_ID_COL = "id";
   private static final String M_AUTH_COL = "author";
+  private static final String M_RECP_COL = "recipient";
+  
   private static final String U_ID_COL = "id";
   
   public static final String MESSAGES_AUTHOR_SQL =
@@ -32,14 +34,24 @@ public class MessageMySQLDao extends AbstractIdDaoMySQL<Message, Long> implement
   
   public static final String COND_MID = "m." + M_ID_COL + " = ?";
   public static final String COND_UID = "m." + M_AUTH_COL + " = ?";
+  public static final String COND_RECP = "m." + M_RECP_COL + " = ?";
+  public static final String COND_RECP_NULL = "m." + M_RECP_COL + " IS NULL";
+  
+  private String msg_sender_recipient_sql;
   
   @Autowired
   private UserDao userDao;
   
   public MessageMySQLDao() {
     super(MTBL, M_ID_COL);
-    this.all_obj_sql = MESSAGES_AUTHOR_SQL;
+    this.all_obj_sql = MESSAGES_AUTHOR_SQL + " WHERE " + COND_RECP_NULL;
     this.obj_for_id_sql = MESSAGES_AUTHOR_SQL + " WHERE " + COND_MID;
+    this.msg_sender_recipient_sql = MESSAGES_AUTHOR_SQL
+        + " WHERE ("
+        + COND_UID + " AND " + COND_RECP 
+        + ") OR ("
+        + COND_UID + " AND " + COND_RECP 
+        + ")";
   }
   
   @Autowired
@@ -88,6 +100,13 @@ public class MessageMySQLDao extends AbstractIdDaoMySQL<Message, Long> implement
       return m;
     }
     
+  }
+
+  @Override
+  public Collection<Message> getDirectMessages(User from, User recipient) {
+    return this.jdbcTemplate.query(this.msg_sender_recipient_sql, 
+        new Object[] {from.getId(), recipient.getId(), recipient.getId(), from.getId()}, 
+        new MessageRowMapper());
   }
   
 }

@@ -7,6 +7,7 @@ import java.util.Queue;
 import java.util.TreeSet;
 
 import com.ajo.asapp.entities.Message;
+import com.ajo.asapp.entities.User;
 
 public class MessageHashDao extends HashDao<Message, Long> implements MessageDao {
 
@@ -29,6 +30,12 @@ public class MessageHashDao extends HashDao<Message, Long> implements MessageDao
   protected Long getNextId() {
     // TODO Auto-generated method stub
     return nextId++;
+  }
+
+  @Override
+  public Collection<Message> getDirectMessages(User from, User recipient) {
+    // TODO Auto-generated method stub
+    return null;
   }
 
 }
