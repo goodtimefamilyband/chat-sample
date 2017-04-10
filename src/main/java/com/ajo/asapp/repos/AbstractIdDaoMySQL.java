@@ -38,10 +38,7 @@ public abstract class AbstractIdDaoMySQL<ObjType extends AbstractIdItem<IdType>,
     .usingGeneratedKeyColumns(this.id_col);
   }
   
-  protected final void buildQueryBases(String tbl, String id_col) {
-    
-    this.tbl = tbl;
-    this.id_col = id_col;
+  protected void buildQueryBases(String tbl, String id_col) {
     
     obj_for_id_sql = OBJ_FOR_ID_SQL
         .replace(":tbl", tbl)
@@ -52,6 +49,9 @@ public abstract class AbstractIdDaoMySQL<ObjType extends AbstractIdItem<IdType>,
   }
   
   protected AbstractIdDaoMySQL(String tbl, String id_col) {
+    this.tbl = tbl;
+    this.id_col = id_col;
+    
     buildQueryBases(tbl, id_col);
   }
   
