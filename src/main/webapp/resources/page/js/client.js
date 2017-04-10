@@ -10,7 +10,22 @@ var AsappClient = function(opts) {
 	var render = function(message) {
 		console.log("Render", message);
 		var msgDiv = $(document.createElement('div'));
-		msgDiv.html(message.text);
+		msgDiv.attr('class', 'message');
+		
+		var msgTime = new Date(message.posted*1000);
+		
+		var timeSpan = $(document.createElement('span'));
+		timeSpan.html(msgTime.toLocaleString());
+		msgDiv.append(timeSpan);
+		
+		var authorSpan = $(document.createElement('span'));
+		authorSpan.html(message.authorName);
+		msgDiv.append(authorSpan);
+		
+		var txtSpan = $(document.createElement('span'));
+		txtSpan.html(message.text);
+		msgDiv.append(txtSpan);
+		
 		return msgDiv;
 	}
 	
@@ -35,6 +50,11 @@ var AsappClient = function(opts) {
         this.stompClient.subscribe(url, function (data) {
         	console.log("Subscribe", data, typeof data.body);
         	opts.onMessage(render(JSON.parse(data.body)));
+        });
+        
+        this.stompClient.subscribe("/user" + url, function (data) {
+        	console.log("User message: " + data);
+        	
         });
 	};
 	
