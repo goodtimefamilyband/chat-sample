@@ -10,11 +10,15 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.stereotype.Repository;
 
-import com.ajo.asapp.entities.Message;
 import com.ajo.asapp.entities.User;
+import com.ajo.asapp.entities.message.ImageMessage;
+import com.ajo.asapp.entities.message.Message;
+import com.ajo.asapp.entities.message.TextMessage;
+import com.ajo.asapp.entities.message.VideoMessage;
 
 @Repository("messageDao")
 public class MessageMySQLDao extends AbstractIdDaoMySQL<Message, Long> implements MessageDao {
@@ -28,9 +32,11 @@ public class MessageMySQLDao extends AbstractIdDaoMySQL<Message, Long> implement
   private static final String U_ID_COL = "id";
   
   public static final String MESSAGES_AUTHOR_SQL =
-      "SELECT m.*, u.username"
+      "SELECT m.*, u.username, i.*, v.*"
       + " FROM " + MTBL + " m"
-      + " INNER JOIN " + UTBL + " u ON m." + M_AUTH_COL + " = u." + U_ID_COL;
+      + " INNER JOIN " + UTBL + " u ON m." + M_AUTH_COL + " = u." + U_ID_COL
+      + " LEFT OUTER JOIN image_data i on m." + M_ID_COL + " = i.msgid"
+      + " LEFT OUTER JOIN video_data v on m." + M_ID_COL + " = v.msgid";
   
   public static final String COND_MID = "m." + M_ID_COL + " = ?";
   public static final String COND_UID = "m." + M_AUTH_COL + " = ?";
@@ -40,6 +46,9 @@ public class MessageMySQLDao extends AbstractIdDaoMySQL<Message, Long> implement
   public static final String ORDER_BY = " ORDER BY m.posted";
   
   private String msg_sender_recipient_sql;
+  
+  private SimpleJdbcInsert imageDataAdder;
+  private SimpleJdbcInsert videoDataAdder;
   
   @Autowired
   private UserDao userDao;
@@ -60,6 +69,14 @@ public class MessageMySQLDao extends AbstractIdDaoMySQL<Message, Long> implement
   public void setDataSource(DriverManagerDataSource dataSource) {
     super.setDataSource(dataSource);
     this.adder.usingColumns("author", "text", "recipient", "posted");
+    
+    this.imageDataAdder = new SimpleJdbcInsert(dataSource)
+      .withTableName("image_data")
+      .usingColumns("msgid", "width", "height");
+    
+    this.videoDataAdder = new SimpleJdbcInsert(dataSource)
+      .withTableName("video_data")
+      .usingColumns("msgid", "len", "source", "html");
   }
 
   @Override
@@ -78,6 +95,29 @@ public class MessageMySQLDao extends AbstractIdDaoMySQL<Message, Long> implement
     Number id = this.adder.executeAndReturnKey(args);
     o.setId(id.longValue());
     
+    args.clear();
+    SimpleJdbcInsert adder = null;
+    if(o instanceof ImageMessage) {
+      ImageMessage im = (ImageMessage)o;
+      args.put("width", im.getWidth());
+      args.put("height", im.getHeight());
+      
+      adder = this.imageDataAdder;
+    }
+    else if(o instanceof VideoMessage) {
+      VideoMessage vm = (VideoMessage)o;
+      args.put("len", vm.getLength());
+      args.put("source", vm.getSource());
+      args.put("html", vm.getHtml());
+      
+      adder = this.videoDataAdder;
+    }
+    
+    if(adder != null) {
+      args.put("msgid", o.getId());
+      adder.execute(args);
+    }
+    
   }
 
   @Override
@@ -92,7 +132,26 @@ public class MessageMySQLDao extends AbstractIdDaoMySQL<Message, Long> implement
     public Message mapRow(ResultSet rs, int rowNum) throws SQLException {
       // TODO Auto-generated method stub
       
-      Message m = new Message();
+      Message m;
+      if(rs.getInt("i.msgid") != 0) {
+        ImageMessage im = new ImageMessage();
+        im.setWidth(rs.getInt("width"));
+        im.setHeight(rs.getInt("height"));
+        m = im;
+      }
+      else if(rs.getInt("v.msgid") != 0) {
+        VideoMessage vm = new VideoMessage();
+        vm.setHtml(rs.getString("v.html"));
+        vm.setSource(rs.getString("v.source"));
+        vm.setLength(rs.getInt("v.len"));
+        
+        m = vm;
+      }
+      else {
+        m = new TextMessage();
+      }
+      
+      //Message m = new Message();
       m.setId(rs.getLong("m." + M_ID_COL));
       m.setPosted(rs.getLong("m.posted"));
       m.setText(rs.getString("m.text"));

@@ -6,8 +6,8 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.TreeSet;
 
-import com.ajo.asapp.entities.Message;
 import com.ajo.asapp.entities.User;
+import com.ajo.asapp.entities.message.Message;
 
 public class MessageHashDao extends HashDao<Message, Long> implements MessageDao {
 
