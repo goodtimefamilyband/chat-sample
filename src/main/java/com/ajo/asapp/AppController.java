@@ -1,10 +1,14 @@
 package com.ajo.asapp;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,8 +28,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import com.ajo.asapp.entities.Message;
+import ac.simons.oembed.OembedResponse;
+import ac.simons.oembed.OembedService;
+
 import com.ajo.asapp.entities.User;
+import com.ajo.asapp.entities.message.ImageMessage;
+import com.ajo.asapp.entities.message.Message;
+import com.ajo.asapp.entities.message.TextMessage;
+import com.ajo.asapp.entities.message.VideoMessage;
 import com.ajo.asapp.repos.MessageDao;
 import com.ajo.asapp.repos.MessageHashDao;
 import com.ajo.asapp.repos.UserDao;
@@ -34,11 +44,17 @@ import com.ajo.asapp.repos.UserHashDao;
 @Controller
 public class AppController {
 
+  public static final String MSG_TYPE_IMG = "image";
+  public static final String MSG_TYPE_VID = "video";
+  
   @Autowired
   private MessageDao messageDao;
   
   @Autowired
   private UserDao userDao;
+  
+  @Autowired
+  private OembedService oembedService;
   
   private SimpMessagingTemplate template;
   
@@ -94,7 +110,7 @@ public class AppController {
       return;
     }
     
-    Message m = new Message();
+    Message m = this.getMessageForText(msg);
     
     m.setPosted(System.currentTimeMillis() / 1000);
     m.setText(msg);
@@ -108,7 +124,6 @@ public class AppController {
     this.template.convertAndSendToUser(u.getName(), "/app/messaging", m);
     this.template.convertAndSendToUser(r.getName(), "/app/messaging", m);
     
-    
   }
   
   
@@ -118,7 +133,9 @@ public class AppController {
       @AuthenticationPrincipal User u, 
       @RequestParam("msg") String msg) {
     System.out.println("Got message "+ msg);
-    Message m = new Message();
+    
+    Message m = this.getMessageForText(msg);
+    
     m.setPosted(System.currentTimeMillis() / 1000);
     m.setText(msg);
     m.setAuthorId(u.getId());
@@ -126,6 +143,48 @@ public class AppController {
     messageDao.add(m);
     
     this.template.convertAndSend("/app/messaging", m);
+  }
+  
+  public Message getMessageForText(String txt) {
+    
+    try {
+      // Checking if URL is valid
+      URL url = new URL(txt);
+      Optional<OembedResponse> optresp = this.oembedService.getOembedResponseFor(txt);      
+      if(optresp.isPresent()) {
+        return this.buildMessage(optresp.get());
+      }
+      
+    }
+    catch (MalformedURLException e) {
+      // TODO Auto-generated catch block
+      //e.printStackTrace();
+      
+    }
+    return new TextMessage();
+  }
+  
+  public Message buildMessage(OembedResponse resp) {
+    System.out.println(resp.getType());
+    switch(resp.getType()) {
+    case MSG_TYPE_IMG:
+      ImageMessage im = new ImageMessage();
+      im.setWidth(resp.getWidth());
+      im.setHeight(resp.getHeight());
+      
+      return im;
+      
+    case MSG_TYPE_VID:
+      VideoMessage vm = new VideoMessage();
+      vm.setHtml(resp.getHtml());
+      vm.setLength(0);
+      vm.setSource(resp.getProviderName());
+      
+      return vm;
+      
+    default:
+      return new TextMessage();
+    }
   }
   
 }
