@@ -37,6 +37,8 @@ public class MessageMySQLDao extends AbstractIdDaoMySQL<Message, Long> implement
   public static final String COND_RECP = "m." + M_RECP_COL + " = ?";
   public static final String COND_RECP_NULL = "m." + M_RECP_COL + " IS NULL";
   
+  public static final String ORDER_BY = " ORDER BY m.posted";
+  
   private String msg_sender_recipient_sql;
   
   @Autowired
@@ -44,14 +46,14 @@ public class MessageMySQLDao extends AbstractIdDaoMySQL<Message, Long> implement
   
   public MessageMySQLDao() {
     super(MTBL, M_ID_COL);
-    this.all_obj_sql = MESSAGES_AUTHOR_SQL + " WHERE " + COND_RECP_NULL;
-    this.obj_for_id_sql = MESSAGES_AUTHOR_SQL + " WHERE " + COND_MID;
+    this.all_obj_sql = MESSAGES_AUTHOR_SQL + " WHERE " + COND_RECP_NULL + ORDER_BY;
+    this.obj_for_id_sql = MESSAGES_AUTHOR_SQL + " WHERE " + COND_MID + ORDER_BY;
     this.msg_sender_recipient_sql = MESSAGES_AUTHOR_SQL
         + " WHERE ("
         + COND_UID + " AND " + COND_RECP 
         + ") OR ("
         + COND_UID + " AND " + COND_RECP 
-        + ")";
+        + ")" + ORDER_BY;
   }
   
   @Autowired
