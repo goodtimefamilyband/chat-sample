@@ -39,6 +39,25 @@ CREATE TABLE messages (
 		ON DELETE RESTRICT
 );
 
+CREATE TABLE image_data (
+	msgid INT PRIMARY KEY AUTO_INCREMENT,
+	width INT NOT NULL,
+	height INT NOT NULL,
+	FOREIGN KEY (msgid) REFERENCES messages(id)
+		ON UPDATE CASCADE
+		ON DELETE CASCADE
+);
+
+CREATE TABLE video_data (
+	msgid INT PRIMARY KEY AUTO_INCREMENT,
+	len INT NOT NULL,
+	source VARCHAR(255) NOT NULL,
+	html TEXT NOT NULL,
+	FOREIGN KEY (msgid) REFERENCES messages(id)
+		ON UPDATE CASCADE
+		ON DELETE CASCADE
+);
+
 CREATE INDEX idx_messages_posted ON messages (posted);
 
 INSERT INTO roles (rolename) VALUES ('ROLE_USER');
