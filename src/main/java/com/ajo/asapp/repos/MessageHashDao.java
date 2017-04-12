@@ -38,4 +38,28 @@ public class MessageHashDao extends HashDao<Message, Long> implements MessageDao
     return null;
   }
 
+  @Override
+  public Collection<Message> getDirectMessages(User from, User recipient, int count, int page) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public int getCount() {
+    // TODO Auto-generated method stub
+    return 0;
+  }
+
+  @Override
+  public Collection<Message> getAll(int count, int page) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public int getCount(User from, User recipient) {
+    // TODO Auto-generated method stub
+    return 0;
+  }
+
 }

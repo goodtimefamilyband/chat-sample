@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +46,17 @@ public class MessageMySQLDao extends AbstractIdDaoMySQL<Message, Long> implement
   
   public static final String ORDER_BY = " ORDER BY m.posted";
   
+  public static final String LIMIT = " LIMIT ? OFFSET ?";
+  
+  public static final String COUNT_SENDER_RECP =
+      "SELECT COUNT(m." + M_ID_COL + ") AS c"
+      + " FROM " + MTBL + " m"
+      + " WHERE ("
+      + COND_UID + " AND " + COND_RECP 
+      + ") OR ("
+      + COND_UID + " AND " + COND_RECP 
+      + ")" + ORDER_BY;
+  
   private String msg_sender_recipient_sql;
   
   private SimpleJdbcInsert imageDataAdder;
@@ -63,6 +75,8 @@ public class MessageMySQLDao extends AbstractIdDaoMySQL<Message, Long> implement
         + ") OR ("
         + COND_UID + " AND " + COND_RECP 
         + ")" + ORDER_BY;
+    
+    this.count_sql += " WHERE recipient IS NULL";
   }
   
   @Autowired
@@ -125,7 +139,42 @@ public class MessageMySQLDao extends AbstractIdDaoMySQL<Message, Long> implement
     // TODO Auto-generated method stub
     return super.getAll(new MessageRowMapper());
   }
+  
+  @Override
+  public Collection<Message> getDirectMessages(User from, User recipient) {
+    return this.jdbcTemplate.query(this.msg_sender_recipient_sql, 
+        new Object[] {from.getId(), recipient.getId(), recipient.getId(), from.getId()}, 
+        new MessageRowMapper());
+  }
 
+  @Override
+  public Collection<Message> getDirectMessages(User from, User recipient, int count, int page) {
+    // TODO Auto-generated method stub
+    int offset = page * count;
+    return this.jdbcTemplate.query(this.msg_sender_recipient_sql + LIMIT, 
+        new Object[] {from.getId(), recipient.getId(), recipient.getId(), from.getId(), count, offset}, 
+        new MessageRowMapper());
+  }
+
+  @Override
+  public Collection<Message> getAll(int count, int page) {
+    // TODO Auto-generated method stub
+    int offset = page * count;
+    return this.jdbcTemplate.query(this.all_obj_sql + LIMIT, 
+        new Object[]{count, offset}, 
+        new MessageRowMapper());
+  }
+
+  @Override
+  public int getCount(User from, User recipient) {
+    // TODO Auto-generated method stub
+    List<Integer> count = this.jdbcTemplate.query(COUNT_SENDER_RECP, 
+        new Object[] {from.getId(), recipient.getId(), recipient.getId(), from.getId()},
+        new CountMapper());
+    
+    return count.get(0);
+  }
+  
   public class MessageRowMapper implements RowMapper<Message> {
 
     @Override
@@ -161,13 +210,6 @@ public class MessageMySQLDao extends AbstractIdDaoMySQL<Message, Long> implement
       return m;
     }
     
-  }
-
-  @Override
-  public Collection<Message> getDirectMessages(User from, User recipient) {
-    return this.jdbcTemplate.query(this.msg_sender_recipient_sql, 
-        new Object[] {from.getId(), recipient.getId(), recipient.getId(), from.getId()}, 
-        new MessageRowMapper());
   }
   
 }
