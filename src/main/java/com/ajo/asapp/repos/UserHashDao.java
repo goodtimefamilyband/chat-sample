@@ -37,5 +37,11 @@ public class UserHashDao extends HashDao<User, Integer> implements UserDao {
     // TODO Auto-generated method stub
     return null;
   }
+
+  @Override
+  public int getCount() {
+    // TODO Auto-generated method stub
+    return 0;
+  }
   
 }

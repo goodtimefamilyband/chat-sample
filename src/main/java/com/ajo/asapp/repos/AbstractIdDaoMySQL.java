@@ -1,11 +1,15 @@
 package com.ajo.asapp.repos;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.AbstractJdbcInsert;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -19,10 +23,14 @@ public abstract class AbstractIdDaoMySQL<ObjType extends AbstractIdItem<IdType>,
   public static final String OBJ_FOR_ID_SQL = 
       "SELECT * FROM :tbl WHERE :id_col = ?";
   
+  public static final String COUNT_SQL =
+      "SELECT COUNT(:id_col) AS c FROM :tbl";
+  
   public static final String ALL_OBJ_SQL = "SELECT * FROM :tbl";
   
   protected String obj_for_id_sql;
   protected String all_obj_sql;
+  protected String count_sql;
   
   protected JdbcTemplate jdbcTemplate;
   
@@ -46,6 +54,9 @@ public abstract class AbstractIdDaoMySQL<ObjType extends AbstractIdItem<IdType>,
     
     all_obj_sql = ALL_OBJ_SQL.replace(":tbl", tbl);
     
+    count_sql = COUNT_SQL
+        .replace(":tbl", tbl)
+        .replace(":id_col", id_col);
   }
   
   protected AbstractIdDaoMySQL(String tbl, String id_col) {
@@ -67,4 +78,19 @@ public abstract class AbstractIdDaoMySQL<ObjType extends AbstractIdItem<IdType>,
   public List<ObjType> getAll(RowMapper<ObjType> rm) {
     return this.jdbcTemplate.query(this.all_obj_sql, rm);
   }
+  
+  public int getCount() {
+    List<Integer> count = this.jdbcTemplate.query(this.count_sql, new CountMapper());
+    
+    return count.get(0);
+  }
+  
+  public class CountMapper implements RowMapper<Integer> {
+    @Override
+    public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+      // TODO Auto-generated method stub
+      return rs.getInt("c");
+    }
+  }
+  
 }
