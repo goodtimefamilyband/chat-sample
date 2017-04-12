@@ -91,6 +91,91 @@ public class AppController {
     return new ResponseEntity<>(m, HttpStatus.OK);
   }
   
+  @GetMapping(value="/app/page/{pageNum}/messages", produces=MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<Map<String, Object>> getMessages(@PathVariable int pageNum,
+      @RequestParam(value="count", defaultValue="10") String countStr) {
+  
+    Map<String, Object> m = new HashMap<>();
+    int count;
+    try {
+      count = Integer.parseInt(countStr);
+    }
+    catch(NumberFormatException ex) {
+      return new ResponseEntity<>(m, HttpStatus.BAD_REQUEST);
+    }
+    
+    
+    m.put("messages", this.messageDao.getAll(count, pageNum));
+    return new ResponseEntity<>(m, HttpStatus.OK);
+  }
+  
+  @GetMapping("/app/page/{pageNum}/")
+  public String appPage(@PathVariable int pageNum,
+      @RequestParam(value="count", defaultValue="10") String countStr,
+      HttpServletResponse resp,
+      ModelMap model) throws IOException {
+    
+    model.addAttribute("isHistory", true);
+    
+    int count;
+    try {
+      count = Integer.parseInt(countStr);
+      if(count == 0) {
+        throw new NumberFormatException();
+      }
+    }
+    catch(NumberFormatException ex) {
+      resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
+      return "app";
+    }
+    
+    System.out.println("Message count: " + messageDao.getCount());
+    model.addAttribute("page", pageNum);
+    
+    int lastPage = (messageDao.getCount() - 1) / count;
+    model.addAttribute("lastPage", lastPage < 0 ? 0 : lastPage);
+    
+    return "app";
+    
+  }
+  
+  @GetMapping("/app/page/{sender}/{pageNum}/")
+  public String appPage(@PathVariable int pageNum,
+      @RequestParam(value="count", defaultValue="10") String countStr,
+      @PathVariable int sender,
+      @AuthenticationPrincipal User recipient,
+      HttpServletResponse resp,
+      ModelMap model) throws IOException {
+    
+    model.addAttribute("isHistory", true);
+    
+    User s = userDao.getForId(sender);
+    if(s == null) {
+      resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+      return "app";
+    }
+    
+    int count;
+    try {
+      count = Integer.parseInt(countStr);
+      if(count == 0) {
+        throw new NumberFormatException();
+      }
+    }
+    catch(NumberFormatException ex) {
+      resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
+      return "app";
+    }
+    
+    model.addAttribute("page", pageNum);
+    
+    int lastPage = (messageDao.getCount(s, recipient) - 1) / count;
+    model.addAttribute("lastPage", lastPage < 0 ? 0 : lastPage);
+    
+    return "app";
+    
+  }
+  
   @GetMapping(value="/app/{sender}/messages", produces=MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<Map<String, Object>> getMessages(@AuthenticationPrincipal User recipient, @PathVariable int sender) {
     Map<String, Object> m = new HashMap<>();
@@ -100,6 +185,31 @@ public class AppController {
     }
     
     m.put("messages", this.messageDao.getDirectMessages(s, recipient));
+    return new ResponseEntity<>(m, HttpStatus.OK);
+  }
+  
+  @GetMapping(value="/app/page/{sender}/{pageNum}/messages", produces=MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<Map<String, Object>> getMessages(@AuthenticationPrincipal User recipient, 
+      @PathVariable int sender,
+      @PathVariable int pageNum,
+      @RequestParam(value="count", defaultValue="10") String countStr) {
+    
+    Map<String, Object> m = new HashMap<>();
+    
+    User s = userDao.getForId(sender);
+    if(s == null) {
+      return new ResponseEntity<>(m, HttpStatus.NOT_FOUND);
+    }
+    
+    int count;
+    try {
+      count = Integer.parseInt(countStr);
+    }
+    catch(NumberFormatException ex) {
+      return new ResponseEntity<>(m, HttpStatus.BAD_REQUEST);
+    }
+    
+    m.put("messages", this.messageDao.getDirectMessages(s, recipient, count, pageNum));
     return new ResponseEntity<>(m, HttpStatus.OK);
   }
   

@@ -8,12 +8,29 @@
     <jsp:body>
     	<h1>Welcome to the app!</h1>
     	<div class="app-wrapper">
-	    	<div id="messages"></div>
-	    	<form id="msgForm" method="POST" action="messages">
-	    		<input type="text" class="txt-inline" name="msg" placeholder="Your message here"/>
-	    		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-	    		<button id="btnMsg" name="submsg" type="submit" class="btn btn-success">Send</button>
-	    	</form>
+	    	<div id="messages">
+	    	</div>
+	    	<c:choose>
+		    	<c:when test="${ empty isHistory }">
+			    	<form id="msgForm" method="POST" action="messages">
+			    		<input type="text" class="txt-inline" name="msg" placeholder="Your message here"/>
+			    		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+			    		<button id="btnMsg" name="submsg" type="submit" class="btn btn-success">Send</button>
+			    	</form>
+		    	</c:when>
+		    	<c:otherwise>
+		    		<div class="pager">
+		    			<a href="../0/">First</a>
+		    			<c:if test="${ page > 0 }">
+		    				<a href="../${ page - 1 }/">Previous</a>
+		    			</c:if>
+		    			<c:if test="${ page < lastPage }">
+		    				<a href="../${ page + 1 }/">Next</a>
+		    			</c:if>
+		    			<a href="../${ lastPage }/">Last</a>
+		    		</div>
+		    	</c:otherwise>
+	    	</c:choose>
     	</div>
     	<script src="/resources/js/app.js"></script>
     </jsp:body>
