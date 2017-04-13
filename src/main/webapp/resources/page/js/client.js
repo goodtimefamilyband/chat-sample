@@ -42,17 +42,16 @@ var AsappClient = function(opts) {
 			console.log("fail");
 			console.log(status);
 		});
-	var url = window.location.pathname + 'messaging';
-	console.log(url);
+	
 	var connectedFxn = function(frame) {
 		this.connected = true;
 		console.log('Connected: ' + frame);
-        this.stompClient.subscribe(url, function (data) {
+        this.stompClient.subscribe('/app/messaging', function (data) {
         	console.log("Subscribe", data, typeof data.body);
         	opts.onMessage(render(JSON.parse(data.body)));
         });
         
-        this.stompClient.subscribe("/user" + url, function (data) {
+        this.stompClient.subscribe("/user/app/messaging", function (data) {
         	console.log("User message: " + data);
         	
         });
