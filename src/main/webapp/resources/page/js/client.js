@@ -4,8 +4,18 @@
 
 var stompClient = null;
 
-var AsappClient = function(opts) {
+var AsappClient = function(clientopts) {
 	this.connected = false;
+	
+	var opts = {
+		onMessage: function (message) {},
+		onUserMessage: function (message) {},
+		onModel: function (model) {}
+	}
+	
+	for(var k in clientopts) {
+		opts[k] = clientopts[k];
+	}
 	
 	var render = function(message) {
 		console.log("Render", message);
@@ -53,7 +63,7 @@ var AsappClient = function(opts) {
         
         this.stompClient.subscribe("/user/app/messaging", function (data) {
         	console.log("User message: " + data);
-        	
+        	opts.onUserMessage(render(JSON.parse(data.body)));
         });
 	};
 	
