@@ -75,12 +75,14 @@ public class AppController {
   }
   
   @GetMapping("/app/")
-  public String app() {
+  public String app(ModelMap model) {
+    model.addAttribute("appscript", "app");
     return "app";
   }
   
   @GetMapping("/app/{sender}/")
-  public String app(@PathVariable int sender) {
+  public String app(@PathVariable int sender, ModelMap model) {
+    model.addAttribute("appscript", "app_user");
     return "app";
   }
   
