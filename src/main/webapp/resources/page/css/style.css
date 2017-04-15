@@ -13,9 +13,36 @@ html, body {
 .app-wrapper {
 	position: relative;
 	display: flex;
-	flex-direction: column;
+	/* flex-direction: column; */
 	flex: 1;
 	overflow: auto;
+}
+
+.middle {
+	flex: 1;
+	display: flex;
+}
+
+#notes {
+	background-color: white;
+	border: 1px solid black;
+	padding: 1rem;
+	border-radius: 1rem;
+	height: 100%;
+	overflow-y: scroll;
+	box-shadow: 1rem 1rem grey;
+}
+
+#app-right {
+	position: relative;
+	max-height: 100%;
+}
+
+#app-right-inner {
+	height: 100%;
+	right: 1.5rem;
+	display: flex;
+	flex-direction: column;
 }
 
 #messages {
@@ -31,3 +58,35 @@ html, body {
 .message *::after {
 	content: ' ';
 }
+
+@media (min-width: 481px) {
+	#app-right-inner {	
+		position: absolute;
+		padding: 3rem;
+	}
+	
+	#notes {
+		width: 200px;
+	}
+}
+
+@media (max-width: 480px) {
+	.app-wrapper {
+		flex-direction: column-reverse;
+		overflow: hidden;
+	}
+	
+	#messages {
+		/* overflow-x: scroll; */
+	}
+	
+	#notes {
+		flex: 1;
+	}
+}
+
+/*
+#btnDm {
+	margin-right: 3rem;
+}
+*/

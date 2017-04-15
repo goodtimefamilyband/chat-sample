@@ -7,31 +7,80 @@
     <jsp:attribute name="title">Welcome!</jsp:attribute>
     <jsp:body>
     	<h1>Welcome to the app!</h1>
+    	
     	<div class="app-wrapper">
 	    	<div id="messages">
 	    	</div>
-	    	<c:choose>
-		    	<c:when test="${ empty isHistory }">
-			    	<form id="msgForm" method="POST" action="messages">
-			    		<input type="text" class="txt-inline" name="msg" placeholder="Your message here"/>
-			    		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-			    		<button id="btnMsg" name="submsg" type="submit" class="btn btn-success">Send</button>
-			    	</form>
-		    	</c:when>
-		    	<c:otherwise>
-		    		<div class="pager">
-		    			<a href="../0/">First</a>
-		    			<c:if test="${ page > 0 }">
-		    				<a href="../${ page - 1 }/">Previous</a>
-		    			</c:if>
-		    			<c:if test="${ page < lastPage }">
-		    				<a href="../${ page + 1 }/">Next</a>
-		    			</c:if>
-		    			<a href="../${ lastPage }/">Last</a>
-		    		</div>
-		    	</c:otherwise>
-	    	</c:choose>
+	    	<div id="app-right">
+	    		<div id="app-right-inner">
+			    	<button id="btnDm">Direct Messages</button>
+			    	<div id="notes">
+			    		<div>Message</div>
+			    		<div>Message</div>
+			    		<div>Message</div>
+			    		<div>Message</div>
+			    		<div>Message</div>
+			    		<div>Message</div>
+			    		<div>Message</div>
+			    		<div>Message</div>
+			    		<div>Message</div>
+			    		<div>Message</div>
+			    		<div>Message</div>
+			    		<div>Message</div>
+			    		<div>Message</div>
+			    		<div>Message</div>
+			    		<div>Message</div>
+			    		<div>Message</div>
+			    		<div>Message</div>
+			    		<div>Message</div>
+			    		<div>Message</div>
+			    		<div>Message</div>
+			    		<div>Message</div>
+			    		<div>Message</div>
+			    		<div>Message</div>
+			    		<div>Message</div>
+			    		<div>Message</div>
+			    		<div>Message</div>
+			    		<div>Message</div>
+			    		<div>Message</div>
+			    		<div>Message</div>
+			    		<div>Message</div>
+			    		<div>Message</div>
+			    		<div>Message</div>
+			    	</div>
+			    </div>
+	    	</div>
+	    	
     	</div>
-    	<script src="/resources/js/app.js"></script>
+    	
+    	<c:choose>
+	    	<c:when test="${ empty isHistory }">
+		    	<form id="msgForm" method="POST" action="messages">
+		    		<input type="text" class="txt-inline" name="msg" placeholder="Your message here"/>
+		    		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+		    		<button id="btnMsg" name="submsg" type="submit" class="btn btn-success">Send</button>
+		    	</form>
+	    	</c:when>
+	    	<c:otherwise>
+	    		<div class="pager">
+	    			<a href="../0/">First</a>
+	    			<c:if test="${ page > 0 }">
+	    				<a href="../${ page - 1 }/">Previous</a>
+	    			</c:if>
+	    			<c:if test="${ page < lastPage }">
+	    				<a href="../${ page + 1 }/">Next</a>
+	    			</c:if>
+	    			<a href="../${ lastPage }/">Last</a>
+	    		</div>
+	    	</c:otherwise>
+    	</c:choose>
+    	
+    	
+    	<c:if test="${ !empty appscript }">
+	    <script src="/resources/js/${ appscript }.js"></script>
+	    </c:if>
+	    
+	    <script src="/resources/js/app_common.js"></script>
+	    
     </jsp:body>
 </t:page>
