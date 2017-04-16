@@ -13,40 +13,9 @@
 	    	</div>
 	    	<div id="app-right">
 	    		<div id="app-right-inner">
-			    	<button id="btnDm">Direct Messages</button>
+			    	<button id="btnDm" class="btn btn-primary">Direct Messages</button>
 			    	<div id="notes">
-			    		<div>Message</div>
-			    		<div>Message</div>
-			    		<div>Message</div>
-			    		<div>Message</div>
-			    		<div>Message</div>
-			    		<div>Message</div>
-			    		<div>Message</div>
-			    		<div>Message</div>
-			    		<div>Message</div>
-			    		<div>Message</div>
-			    		<div>Message</div>
-			    		<div>Message</div>
-			    		<div>Message</div>
-			    		<div>Message</div>
-			    		<div>Message</div>
-			    		<div>Message</div>
-			    		<div>Message</div>
-			    		<div>Message</div>
-			    		<div>Message</div>
-			    		<div>Message</div>
-			    		<div>Message</div>
-			    		<div>Message</div>
-			    		<div>Message</div>
-			    		<div>Message</div>
-			    		<div>Message</div>
-			    		<div>Message</div>
-			    		<div>Message</div>
-			    		<div>Message</div>
-			    		<div>Message</div>
-			    		<div>Message</div>
-			    		<div>Message</div>
-			    		<div>Message</div>
+			    		
 			    	</div>
 			    </div>
 	    	</div>
@@ -75,12 +44,11 @@
 	    	</c:otherwise>
     	</c:choose>
     	
+    	<script src="/resources/js/app_common.js"></script>
     	
     	<c:if test="${ !empty appscript }">
 	    <script src="/resources/js/${ appscript }.js"></script>
 	    </c:if>
-	    
-	    <script src="/resources/js/app_common.js"></script>
 	    
     </jsp:body>
 </t:page>
