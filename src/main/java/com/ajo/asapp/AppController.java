@@ -118,6 +118,7 @@ public class AppController {
       ModelMap model) throws IOException {
     
     model.addAttribute("isHistory", true);
+    model.addAttribute("appscript", "app_history");
     
     int count;
     try {
@@ -150,6 +151,7 @@ public class AppController {
       ModelMap model) throws IOException {
     
     model.addAttribute("isHistory", true);
+    model.addAttribute("appscript", "app_history");
     
     User s = userDao.getForId(sender);
     if(s == null) {
