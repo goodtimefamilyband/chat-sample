@@ -64,8 +64,20 @@ function scrollDown() {
 	}
 }
 
+function postLastSeen(timestamp) {
+	var csrf = $('#csrf');
+	var csrf_name = csrf.attr('name');
+	var csrf_val = csrf.attr('value');
+	var data = {tstamp: timestamp};
+	data[csrf_name] = csrf_val;
+	
+	$.post("lastseen", data);
+	
+}
+
 function showMain (message) {
 	$('#messages').append(render(message));
+	postLastSeen(message.posted);
 	scrollDown();
 }
 
@@ -82,6 +94,20 @@ function showNote (message) {
 		.html('New Messages');
 }
 
+function doModel(model, includeNote) {
+	for(i in model.messages) {
+		$('#messages').append(render(model.messages[i]));
+	}
+	scrollDown();
+	var lastMessage = model.messages[model.messages.length - 1];
+	postLastSeen(lastMessage.posted);
+	
+	for(i in model.unseen) {
+		if(includeNote(model.unseen[i])) {
+			showNote(model.unseen[i]);
+		}
+	}
+}
 
 $('#msgForm').submit(function() {
 	$(this).ajaxSubmit();

@@ -26,7 +26,7 @@
 	    	<c:when test="${ empty isHistory }">
 		    	<form id="msgForm" method="POST" action="messages">
 		    		<input type="text" class="txt-inline" name="msg" placeholder="Your message here"/>
-		    		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+		    		<input id="csrf" type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 		    		<button id="btnMsg" name="submsg" type="submit" class="btn btn-success">Send</button>
 		    	</form>
 	    	</c:when>

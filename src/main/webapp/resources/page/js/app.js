@@ -9,10 +9,10 @@ var client = new AsappClient({
     },
     onModel: function(model) {
     	console.log(model);
-    	for(i in model.messages) {
-    		$('#messages').append(render(model.messages[i]));
-    	}
-    	scrollDown();
+    	doModel(model, function(msg) {
+    		
+    		return msg.recipient != null;
+    	});
     },
     onUserMessage: function(message) {
     	console.log("OnUserMessage", message);
