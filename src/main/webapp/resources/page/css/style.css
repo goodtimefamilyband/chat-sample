@@ -31,6 +31,7 @@ html, body {
 	height: 100%;
 	overflow-y: scroll;
 	box-shadow: 1rem 1rem grey;
+	display: none;
 }
 
 #app-right {
@@ -48,6 +49,9 @@ html, body {
 #messages {
 	overflow-y: scroll;
 	flex: 1;
+	background-color: white;
+	border: 1px solid black;
+	padding: 1rem;
 }
 
 #msgForm {
@@ -68,6 +72,25 @@ html, body {
 	#notes {
 		width: 200px;
 	}
+}
+
+.msgtime {
+	color: grey;
+	font-size: smaller;
+}
+
+.message {
+	padding: 0.5rem 0;
+	border-top: 1px solid aliceblue;
+}
+
+.message > * {
+	display: inline-block;
+	margin: 0 0.5rem;
+}
+
+#txtMsg {
+	flex: 1;
 }
 
 @media (max-width: 480px) {

@@ -14,9 +14,11 @@ var render = function(message) {
 	
 	var timeSpan = $(document.createElement('span'));
 	timeSpan.html(msgTime.toLocaleString());
+	timeSpan.addClass('msgtime');
 	msgDiv.append(timeSpan);
 	
-	var authorSpan = $(document.createElement('span'));
+	var authorSpan = $(document.createElement('a'));
+	authorSpan.attr('href', '/app/' + message.authorId + '/');
 	authorSpan.html(message.authorName);
 	msgDiv.append(authorSpan);
 	
@@ -38,7 +40,13 @@ var renderUserMessage = function(message) {
 	userDiv.attr('id', 'note' + message.authorId);
 	
 	var userA = $(document.createElement('a'));
-	userA.attr('href', '/app/' + message.authorId + '/');
+	
+	if(message.recipient != null) {
+		userA.attr('href', '/app/' + message.authorId + '/');
+	}
+	else {
+		userA.attr('href', '/app/');
+	}
 	userA.html(message.authorName);
 	userDiv.append(userA);
 	
@@ -86,6 +94,7 @@ function showNote (message) {
 		message.authorId = "main";
 	}
 	
+	$('.note-placeholder').remove();
 	$('#note' + message.authorId).remove();
 	
 	$('#notes').prepend(renderUserMessage(message));
@@ -94,13 +103,17 @@ function showNote (message) {
 		.html('New Messages');
 }
 
-function doModel(model, includeNote) {
+function doModel(model, includeNote, postLast = true) {
 	for(i in model.messages) {
 		$('#messages').append(render(model.messages[i]));
 	}
 	scrollDown();
 	var lastMessage = model.messages[model.messages.length - 1];
-	postLastSeen(lastMessage.posted);
+	console.log("lastMessage", lastMessage);
+	
+	if(postLast) {
+		postLastSeen(lastMessage.posted);
+	}
 	
 	for(i in model.unseen) {
 		if(includeNote(model.unseen[i])) {
@@ -110,7 +123,15 @@ function doModel(model, includeNote) {
 }
 
 $('#msgForm').submit(function() {
-	$(this).ajaxSubmit();
+	$(this).ajaxSubmit({
+		success: function(resp, status, xhr, jq) {
+			console.log("submitted")
+			$('#txtMsg').val('').focus();
+		},
+		error: function() {
+			console.log("There was an error");
+		}
+	});
 	return false;
 });
 

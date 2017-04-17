@@ -14,6 +14,6 @@ var client = new AsappClient({
     	console.log(model);
     	doModel(model, function(msg){
     		return true;
-    	});
+    	}, false);
     }
 });
