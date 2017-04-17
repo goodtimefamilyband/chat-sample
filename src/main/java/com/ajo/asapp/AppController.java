@@ -87,9 +87,10 @@ public class AppController {
   }
   
   @GetMapping(value="/app/messages", produces=MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<Map<String, Object>> getMessages() {
-    Map<String, Object> m = new HashMap<>();
+  public ResponseEntity<Map<String, Object>> getMessages(@AuthenticationPrincipal User u) {
+    Map<String, Object> m = baseModel(u);
     m.put("messages", this.messageDao.getAll());
+    
     return new ResponseEntity<>(m, HttpStatus.OK);
   }
   
@@ -182,7 +183,7 @@ public class AppController {
   
   @GetMapping(value="/app/{sender}/messages", produces=MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<Map<String, Object>> getMessages(@AuthenticationPrincipal User recipient, @PathVariable int sender) {
-    Map<String, Object> m = new HashMap<>();
+    Map<String, Object> m = baseModel(recipient);
     User s = userDao.getForId(sender);
     if(s == null) {
       return new ResponseEntity<>(m, HttpStatus.NOT_FOUND);
@@ -265,6 +266,45 @@ public class AppController {
     this.template.convertAndSend("/app/messaging", m);
   }
   
+  @PostMapping("/app/lastseen")
+  //@ResponseStatus(HttpStatus.OK)
+  public void setLastSeen(HttpServletResponse resp,
+      @AuthenticationPrincipal User u, 
+      @RequestParam("tstamp") String timestamp) throws IOException {
+    
+    try {
+      int tstamp = Integer.parseInt(timestamp);
+      this.messageDao.setLastSeen(u, null, tstamp);
+      resp.sendError(HttpServletResponse.SC_OK);
+    }
+    catch(NumberFormatException ex) {
+      resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
+    }
+  }
+  
+  @PostMapping("/app/{channel}/lastseen")
+  public void setLastSeen(HttpServletResponse resp,
+      @AuthenticationPrincipal User u, 
+      @RequestParam("tstamp") String timestamp,
+      @PathVariable int channel) throws IOException {
+    
+    User ch = this.userDao.getForId(channel);
+    if(ch == null) {
+      resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+      return;
+    }
+    
+    try {
+      int tstamp = Integer.parseInt(timestamp);
+      this.messageDao.setLastSeen(u, ch, tstamp);
+      resp.sendError(HttpServletResponse.SC_OK);
+    }
+    catch(NumberFormatException ex) {
+      resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
+    }
+    
+  }
+  
   public Message getMessageForText(String txt) {
     
     try {
@@ -321,6 +361,13 @@ public class AppController {
     default:
       return new TextMessage();
     }
+  }
+  
+  public Map<String, Object> baseModel(User u) {
+    Map<String, Object> m = new HashMap<>();
+    m.put("unseen", this.messageDao.getNewMessages(u));
+    
+    return m;
   }
   
 }
