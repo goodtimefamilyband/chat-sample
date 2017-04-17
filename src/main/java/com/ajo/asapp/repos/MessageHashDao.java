@@ -62,4 +62,16 @@ public class MessageHashDao extends HashDao<Message, Long> implements MessageDao
     return 0;
   }
 
+  @Override
+  public Collection<Message> getNewMessages(User u) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public void setLastSeen(User u, User channel, int timestamp) {
+    // TODO Auto-generated method stub
+    
+  }
+
 }

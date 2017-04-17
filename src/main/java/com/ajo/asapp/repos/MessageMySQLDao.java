@@ -4,12 +4,14 @@ import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.sql.Types;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.PreparedStatementCallback;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -56,6 +58,31 @@ public class MessageMySQLDao extends AbstractIdDaoMySQL<Message, Long> implement
       + ") OR ("
       + COND_UID + " AND " + COND_RECP 
       + ")" + ORDER_BY;
+  
+  public static final String LAST_SEEN_UPSERT =
+      "INSERT INTO last_seen VALUES (?,?,?)"
+      + " ON DUPLICATE KEY UPDATE tstamp = VALUES(tstamp)";
+  
+  public static final String LAST_SEEN_CHECK =
+      "SELECT 1 as c FROM last_seen WHERE userid = ? AND channel = ?";
+  
+  public static final String LAST_SEEN_SQL = MESSAGES_AUTHOR_SQL
+      + " INNER JOIN last_seen ls"
+      + " ON (m.author = ls.channel AND m.recipient = ls.userid)"
+      + " OR (m.recipient IS NULL and ls.channel = 0)"
+      + " WHERE ls.userid = ? AND m.posted > ls.tstamp"
+      + ORDER_BY;
+      /*
+      "SELECT m.*, i.*, v.*"
+      + " FROM " + MTBL + " m"
+      + " INNER JOIN last_seen ls"
+      + " ON (m.author = ls.channel AND m.recipient = ls.userid)"
+      + " OR (m.recipient IS NULL and ls.channel = 0)"
+      + " LEFT OUTER JOIN image_data i on m." + M_ID_COL + " = i.msgid"
+      + " LEFT OUTER JOIN video_data v on m." + M_ID_COL + " = v.msgid"
+      + " WHERE ls.userid = ? AND m.posted > ls.tstamp"
+      + ORDER_BY;
+      */
   
   private String msg_sender_recipient_sql;
   
@@ -207,8 +234,41 @@ public class MessageMySQLDao extends AbstractIdDaoMySQL<Message, Long> implement
       m.setAuthorId(rs.getInt("m." + M_AUTH_COL));
       m.setAuthorName(rs.getString("u.username"));
       
+      int recip = rs.getInt("m.recipient");
+      if(recip != 0) {
+        m.setRecipient(recip);
+      }
+      
       return m;
     }
+    
+  }
+
+  @Override
+  public Collection<Message> getNewMessages(User u) {
+    // TODO Auto-generated method stub
+    return this.jdbcTemplate.query(LAST_SEEN_SQL, new Object[]{u.getId()}, new MessageRowMapper());
+  }
+
+  @Override
+  public void setLastSeen(User u, User channel, int timestamp) {
+    // TODO Auto-generated method stub
+    Object channelId;
+    if(channel == null) {
+      channelId = Types.NULL;
+    }
+    else {
+      channelId = channel.getId();
+      List<Integer> l = this.jdbcTemplate.query(LAST_SEEN_CHECK, 
+          new Object[]{channelId, u.getId()},
+          new CountMapper());
+      
+      if(l.isEmpty()) {
+        this.jdbcTemplate.update(LAST_SEEN_UPSERT, channelId, u.getId(), 0);
+      }
+    }
+    
+    this.jdbcTemplate.update(LAST_SEEN_UPSERT, u.getId(), channelId, timestamp);
     
   }
   

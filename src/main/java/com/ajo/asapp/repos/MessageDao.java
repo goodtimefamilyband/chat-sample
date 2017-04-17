@@ -17,4 +17,8 @@ public interface MessageDao extends AbstractIdDao<Message, Long> {
   
   public int getCount(User from, User recipient);
   
+  public Collection<Message> getNewMessages(User u);
+  
+  public void setLastSeen(User u, User channel, int timestamp);
+  
 }
