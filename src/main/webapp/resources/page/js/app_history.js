@@ -12,9 +12,8 @@ var client = new AsappClient({
     },
     onModel: function(model) {
     	console.log(model);
-    	for(i in model.messages) {
-    		$('#messages').append(render(model.messages[i]));
-    	}
-    	scrollDown();
+    	doModel(model, function(msg){
+    		return true;
+    	});
     }
 });

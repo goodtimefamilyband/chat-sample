@@ -95,10 +95,11 @@ public class AppController {
   }
   
   @GetMapping(value="/app/page/{pageNum}/messages", produces=MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<Map<String, Object>> getMessages(@PathVariable int pageNum,
+  public ResponseEntity<Map<String, Object>> getMessages(@AuthenticationPrincipal User u,
+      @PathVariable int pageNum,
       @RequestParam(value="count", defaultValue="10") String countStr) {
   
-    Map<String, Object> m = new HashMap<>();
+    Map<String, Object> m = baseModel(u);
     int count;
     try {
       count = Integer.parseInt(countStr);
@@ -199,7 +200,7 @@ public class AppController {
       @PathVariable int pageNum,
       @RequestParam(value="count", defaultValue="10") String countStr) {
     
-    Map<String, Object> m = new HashMap<>();
+    Map<String, Object> m = baseModel(recipient);
     
     User s = userDao.getForId(sender);
     if(s == null) {
