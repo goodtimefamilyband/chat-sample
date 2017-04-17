@@ -60,4 +60,16 @@ CREATE TABLE video_data (
 
 CREATE INDEX idx_messages_posted ON messages (posted);
 
+CREATE TABLE last_seen (
+	userid INT NOT NULL,
+	channel INT,
+	tstamp INT NOT NULL,
+	PRIMARY KEY(userid, channel),
+	FOREIGN KEY (userid) REFERENCES users (id)
+		ON UPDATE CASCADE
+		ON DELETE CASCADE
+);
+
+CREATE INDEX idx_last_seen_channel ON last_seen (channel);
+
 INSERT INTO roles (rolename) VALUES ('ROLE_USER');
