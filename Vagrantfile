@@ -13,7 +13,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = "ubuntu/trusty64"
 
   # expose port 8080
-  # config.vm.network :forwarded_port,  guest: 8080,    host: 8080
+  config.vm.network :forwarded_port,  guest: 8080,    host: 8081
   
   # expose port 5432 for PostgreSQL
   # config.vm.network :forwarded_port,  guest: 5432,    host: 5432
@@ -23,6 +23,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # run the install script for dependencies
   config.vm.provision :shell, :path => "bootstrap.sh"
+  
+  # launch the server at boot time
+  config.vm.provision :shell, :path => "run.sh", run: "always"
   
   # increase memory
   config.vm.provider "virtualbox" do |v|
