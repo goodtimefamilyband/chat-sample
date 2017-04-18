@@ -22,6 +22,23 @@ public class AuthController {
   @Autowired
   private RoleDao roleDao;
   
+  @GetMapping("/login")
+  public String login(
+      @RequestParam(value = "error", required = false) String error,
+      @RequestParam(value = "logout", required = false) String logout,
+      ModelMap model) {
+      if (error != null) {
+        model.addAttribute("error", "Invalid username/password");
+      }
+
+      if (logout != null) {
+        model.addAttribute("msg", "You've been logged out successfully.");
+      }
+      
+      return "login";
+
+  }
+  
   @GetMapping("/create")
   public String create() {
     return "create";
@@ -58,7 +75,7 @@ public class AuthController {
     return "create";
   }
   
-  @GetMapping("/logout")
+  @GetMapping("/app/logout")
   public String logout() {
     return "logout";
   }
