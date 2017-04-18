@@ -70,8 +70,8 @@ public class AppController {
   }
   
   @GetMapping("/")
-  public String home(HttpServletRequest req, ModelMap model) {
-    return "home";
+  public void home(HttpServletResponse resp) throws IOException {
+    resp.sendRedirect("/app/");
   }
   
   @GetMapping("/app/")
