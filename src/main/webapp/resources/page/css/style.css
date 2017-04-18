@@ -4,6 +4,10 @@ html, body {
 	height: 100%;
 }
 
+.pager {
+	width: 100%;
+}
+
 .fill {
 	height: 100%;
 	display: flex;
@@ -91,6 +95,26 @@ html, body {
 
 #txtMsg {
 	flex: 1;
+}
+
+#login-box {
+	width: 50%;
+	min-width: 300px;
+	padding: 20px;
+	background: #fff;
+	-webkit-border-radius: 2px;
+	-moz-border-radius: 2px;
+	border: 1px solid #000;
+}
+
+.row {
+	margin-top: 1rem;
+}
+
+@media (min-width: 481px) {
+	#login-box {
+		margin: 100px auto;
+	}
 }
 
 @media (max-width: 480px) {

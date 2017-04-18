@@ -1,80 +1,70 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<html>
-<head>
-<title>Login Page</title>
-<style>
-.error {
-	padding: 15px;
-	margin-bottom: 20px;
-	border: 1px solid transparent;
-	border-radius: 4px;
-	color: #a94442;
-	background-color: #f2dede;
-	border-color: #ebccd1;
-}
+<%@ page session="false"%>
+<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
-.msg {
-	padding: 15px;
-	margin-bottom: 20px;
-	border: 1px solid transparent;
-	border-radius: 4px;
-	color: #31708f;
-	background-color: #d9edf7;
-	border-color: #bce8f1;
-}
+<t:page>
+    <jsp:attribute name="title">Chat</jsp:attribute>
+    <jsp:body>
 
-#login-box {
-	width: 300px;
-	padding: 20px;
-	margin: 100px auto;
-	background: #fff;
-	-webkit-border-radius: 2px;
-	-moz-border-radius: 2px;
-	border: 1px solid #000;
-}
-</style>
-</head>
-<body onload='document.loginForm.username.focus();'>
-
-	<h1>Create Account</h1>
+	<h1>Chat</h1>
 
 	<div id="login-box">
+
+		<h2>Create Account</h2>
+
 		<c:if test="${not empty error}">
-			<div class="error">${error}</div>
+			<div class="alert alert-danger">${error}</div>
 		</c:if>
 		<c:if test="${not empty msg}">
-			<div class="msg">${msg}</div>
+			<div class="alert alert-info">${msg}</div>
 		</c:if>
-
-		<form name='signupForm'
+		
+		<form name='loginForm'
 		  action="<c:url value='create' />" method='POST'>
 
-		  <table>
-			<tr>
-				<td>Username:</td>
-				<td><input type='text' name='username' value=''></td>
-			</tr>
-			<tr>
-				<td>Password:</td>
-				<td><input type='password' name='password' /></td>
-			</tr>
-			<tr>
-				<td>Password (again):</td>
-				<td><input type='password' name='password2' /></td>
-			</tr>
-			<tr>
-				<td colspan='2'><input name="submit" type="submit"
-					value="submit" /></td>
-			</tr>
-		  </table>
-
-		  <input type="hidden" name="${_csrf.parameterName}"
-			value="${_csrf.token}" />
-			
-			
+			<div class="jumbotron">
+				<div class="row">
+					<div class="col-sm-6">
+						User:
+					</div>
+					<div class="col-sm-6">
+						<input type='text' name='username' value='' class="form-control" />
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-6">
+						Password:
+					</div>
+					<div class="col-sm-6">
+						<input type='password' name='password' class="form-control" />
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-6">
+						Password:
+					</div>
+					<div class="col-sm-6">
+						<input type='password' name='password2' class="form-control" />
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-6">
+						<button name="submit" type="submit" class="btn btn-primary">Submit</button>
+					</div>
+					<div class="col-sm-6">
+						<a href="/login">
+							<button type="button" class="btn btn-success">Login page</button>
+						</a>	
+					</div>
+					<input type="hidden" name="${_csrf.parameterName}"
+					value="${_csrf.token}" />
+							
+				</div>
+			</div>
 
 		</form>
 	</div>
 
-</body>
-</html>
+    </jsp:body>
+</t:page>

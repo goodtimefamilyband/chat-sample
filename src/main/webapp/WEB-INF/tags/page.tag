@@ -36,7 +36,39 @@
  
         <div class="header">
             <div class="nav pull-left">ASAPP Chat</div>
-            
+            <c:if test="${ !empty pageContext.request.userPrincipal }">
+	            <div class="nav pull-right">
+	            	${ pageContext.request.userPrincipal.name } 
+	            	<c:if test="${ !empty recip }">
+	            		| <a href="/app/">Main Chat</a> |
+	            	</c:if>
+	            	<c:choose>
+	            		<c:when test="${ empty isHistory }">
+	            			<c:choose>
+	            				<c:when test="${ empty recip }">
+	            					<a href="/app/page/0/">History</a>
+	            				</c:when>
+	            				<c:otherwise>
+	            					<a href="/app/page/${ recip.id }/0/">History</a>
+	            				</c:otherwise>
+	            			</c:choose>
+	            		</c:when>
+	            		<c:otherwise>
+	            			<c:choose>
+		            			<c:when test="${ empty recip }">
+		            				<a href="/app/">Chat</a>
+		            			</c:when>
+		            			<c:otherwise>
+		            				<a href="/app/${ recip.id }/">Chat</a>
+		            			</c:otherwise>
+	            			</c:choose>
+	            		</c:otherwise>
+	            	</c:choose> |
+	            	<a href="/app/logout">
+	            		<button type="button" class="btn btn-danger">Logout</button>
+	            	</a>
+	            </div>
+            </c:if>
         </div>
         <c:if test="${!empty errors}">
 	        <div class="alert alert-danger">

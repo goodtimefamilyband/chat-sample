@@ -81,8 +81,17 @@ public class AppController {
   }
   
   @GetMapping("/app/{sender}/")
-  public String app(@PathVariable int sender, ModelMap model) {
+  public String app(HttpServletResponse resp, @PathVariable int sender, ModelMap model) throws IOException {
     model.addAttribute("appscript", "app_user");
+    
+    User senderU = userDao.getForId(sender);
+    if(senderU == null) {
+      resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+    }
+    else {
+      model.addAttribute("recip", senderU);
+    }
+    
     return "app";
   }
   
@@ -160,6 +169,8 @@ public class AppController {
       resp.sendError(HttpServletResponse.SC_NOT_FOUND);
       return "app";
     }
+    
+    model.addAttribute("recip", s);
     
     int count;
     try {

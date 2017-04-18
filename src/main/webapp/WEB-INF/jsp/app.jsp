@@ -6,7 +6,16 @@
 <t:page>
     <jsp:attribute name="title">Welcome!</jsp:attribute>
     <jsp:body>
-    	<h1>Welcome to the app!</h1>
+    	<h1>
+    		<c:choose>
+	    		<c:when test="${ empty recip }">
+	    			Main Chat
+	    		</c:when>
+	    		<c:otherwise>
+	    			Conversation with ${ recip.name }
+	    		</c:otherwise>
+    		</c:choose>
+    	</h1>
     	
     	<div class="app-wrapper">
 	    	<div id="messages">
