@@ -26,6 +26,7 @@ sudo add-apt-repository ppa:webupd8team/java -y
 sudo apt-get update -y
 sudo apt-get install oracle-java8-installer -y
 sudo apt-get install ant -y
+sudo ln -s /usr/lib/jvm/java-8-oracle /usr/lib/jvm/default-java
 
 apt-get install --yes git \
     mysql-server-5.6 \
