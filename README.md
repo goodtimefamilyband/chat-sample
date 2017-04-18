@@ -47,12 +47,12 @@ Same as above, but displays the paged message history for the user with ID {user
 #### {Any of the above}/messages ####
 Returns serialized JSON object, subject to corresponding constraints, with the following keys:
 * messages: An array of message objects to be displayed in the main area. Message objects possess the following keys:
-** authorId: The ID of the user who sent this message.
-** authorName: The username of the user who sent this message.
-** html: The text or HTML that should be displayed in a chat window.
-** posted: A Unix timestamp indicating when this message was saved to the database.
-** recipient: The ID of the user for whom this message was intended, or null if it was sent to the main chat.
-** text: The original text sent by the author of the message to the server.
+  * authorId: The ID of the user who sent this message.
+  * authorName: The username of the user who sent this message.
+  * html: The text or HTML that should be displayed in a chat window.
+  * posted: A Unix timestamp indicating when this message was saved to the database.
+  * recipient: The ID of the user for whom this message was intended, or null if it was sent to the main chat.
+  * text: The original text sent by the author of the message to the server.
 * unseen: An array of unseen messages.  These are used to show notifications on page load.  Another client making use of these endpoints may display the messages individually.
 
 #### /app/messages (POST) ####
