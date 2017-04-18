@@ -21,12 +21,6 @@ var client = new AsappClient({
     	doModel(model, function(msg) {
     		return msg.authorId != userId;
     	});
-    	/*
-    	for(i in model.messages) {
-    		$('#messages').append(render(model.messages[i]));
-    	}
-    	scrollDown();
-    	*/
     },
     onMessage: function (message) {
     	showNote(message);

@@ -2,6 +2,7 @@ package com.ajo.asapp.entities;
 
 import org.springframework.security.core.GrantedAuthority;
 
+@SuppressWarnings("serial")
 public class Role extends AbstractIdItem<Integer> implements GrantedAuthority {
   
   private String name;
@@ -16,7 +17,6 @@ public class Role extends AbstractIdItem<Integer> implements GrantedAuthority {
 
   @Override
   public String getAuthority() {
-    // TODO Auto-generated method stub
     return name;
   }
 }

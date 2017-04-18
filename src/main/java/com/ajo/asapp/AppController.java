@@ -2,11 +2,8 @@ package com.ajo.asapp;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -24,7 +21,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -43,10 +39,9 @@ import com.ajo.asapp.entities.message.Message;
 import com.ajo.asapp.entities.message.TextMessage;
 import com.ajo.asapp.entities.message.VideoMessage;
 import com.ajo.asapp.repos.MessageDao;
-import com.ajo.asapp.repos.MessageHashDao;
 import com.ajo.asapp.repos.UserDao;
-import com.ajo.asapp.repos.UserHashDao;
 
+@SuppressWarnings("deprecation")
 @Controller
 public class AppController {
 
@@ -279,7 +274,6 @@ public class AppController {
   }
   
   @PostMapping("/app/lastseen")
-  //@ResponseStatus(HttpStatus.OK)
   public void setLastSeen(HttpServletResponse resp,
       @AuthenticationPrincipal User u, 
       @RequestParam("tstamp") String timestamp) throws IOException {
@@ -321,11 +315,14 @@ public class AppController {
     
     try {
       // Checking if URL is valid
+      @SuppressWarnings("unused")
       URL url = new URL(txt);
+      
       HttpClient client = new DefaultHttpClient();
       HttpResponse resp = client.execute(new HttpHead(txt));
       Header contentType = resp.getFirstHeader("Content-Type");
-      if(contentType.getValue().startsWith("image/")) {//.matches("image/.*")) {
+      
+      if(contentType.getValue().startsWith("image/")) {
         ImageMessage im = new ImageMessage();
         im.setWidth(300);
         im.setHeight(300);
@@ -340,7 +337,7 @@ public class AppController {
     }
     catch (MalformedURLException e) {
       // TODO Auto-generated catch block
-      //e.printStackTrace();
+      e.printStackTrace();
       
     } catch (ClientProtocolException e) {
       // TODO Auto-generated catch block

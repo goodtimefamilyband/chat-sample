@@ -1,17 +1,13 @@
 package com.ajo.asapp.repos;
 
-import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.PreparedStatementCallback;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -72,18 +68,7 @@ public class MessageMySQLDao extends AbstractIdDaoMySQL<Message, Long> implement
       + " OR (m.recipient IS NULL and ls.channel = 0)"
       + " WHERE ls.userid = ? AND m.posted > ls.tstamp"
       + ORDER_BY;
-      /*
-      "SELECT m.*, i.*, v.*"
-      + " FROM " + MTBL + " m"
-      + " INNER JOIN last_seen ls"
-      + " ON (m.author = ls.channel AND m.recipient = ls.userid)"
-      + " OR (m.recipient IS NULL and ls.channel = 0)"
-      + " LEFT OUTER JOIN image_data i on m." + M_ID_COL + " = i.msgid"
-      + " LEFT OUTER JOIN video_data v on m." + M_ID_COL + " = v.msgid"
-      + " WHERE ls.userid = ? AND m.posted > ls.tstamp"
-      + ORDER_BY;
-      */
-  
+      
   private String msg_sender_recipient_sql;
   
   private SimpleJdbcInsert imageDataAdder;
@@ -163,7 +148,6 @@ public class MessageMySQLDao extends AbstractIdDaoMySQL<Message, Long> implement
 
   @Override
   public Collection<Message> getAll() {
-    // TODO Auto-generated method stub
     return super.getAll(new MessageRowMapper());
   }
   
@@ -176,7 +160,6 @@ public class MessageMySQLDao extends AbstractIdDaoMySQL<Message, Long> implement
 
   @Override
   public Collection<Message> getDirectMessages(User from, User recipient, int count, int page) {
-    // TODO Auto-generated method stub
     int offset = page * count;
     return this.jdbcTemplate.query(this.msg_sender_recipient_sql + LIMIT, 
         new Object[] {from.getId(), recipient.getId(), recipient.getId(), from.getId(), count, offset}, 
@@ -185,7 +168,6 @@ public class MessageMySQLDao extends AbstractIdDaoMySQL<Message, Long> implement
 
   @Override
   public Collection<Message> getAll(int count, int page) {
-    // TODO Auto-generated method stub
     int offset = page * count;
     return this.jdbcTemplate.query(this.all_obj_sql + LIMIT, 
         new Object[]{count, offset}, 
@@ -194,7 +176,6 @@ public class MessageMySQLDao extends AbstractIdDaoMySQL<Message, Long> implement
 
   @Override
   public int getCount(User from, User recipient) {
-    // TODO Auto-generated method stub
     List<Integer> count = this.jdbcTemplate.query(COUNT_SENDER_RECP, 
         new Object[] {from.getId(), recipient.getId(), recipient.getId(), from.getId()},
         new CountMapper());
@@ -206,7 +187,6 @@ public class MessageMySQLDao extends AbstractIdDaoMySQL<Message, Long> implement
 
     @Override
     public Message mapRow(ResultSet rs, int rowNum) throws SQLException {
-      // TODO Auto-generated method stub
       
       Message m;
       if(rs.getInt("i.msgid") != 0) {
@@ -227,7 +207,6 @@ public class MessageMySQLDao extends AbstractIdDaoMySQL<Message, Long> implement
         m = new TextMessage();
       }
       
-      //Message m = new Message();
       m.setId(rs.getLong("m." + M_ID_COL));
       m.setPosted(rs.getLong("m.posted"));
       m.setText(rs.getString("m.text"));
@@ -246,13 +225,11 @@ public class MessageMySQLDao extends AbstractIdDaoMySQL<Message, Long> implement
 
   @Override
   public Collection<Message> getNewMessages(User u) {
-    // TODO Auto-generated method stub
     return this.jdbcTemplate.query(LAST_SEEN_SQL, new Object[]{u.getId()}, new MessageRowMapper());
   }
 
   @Override
   public void setLastSeen(User u, User channel, int timestamp) {
-    // TODO Auto-generated method stub
     Object channelId;
     if(channel == null) {
       channelId = Types.NULL;

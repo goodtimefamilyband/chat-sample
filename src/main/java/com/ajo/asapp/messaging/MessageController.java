@@ -7,7 +7,7 @@ import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
-import com.ajo.asapp.entities.Message;
+import com.ajo.asapp.entities.message.Message;
 import com.ajo.asapp.repos.MessageDao;
 
 @Controller

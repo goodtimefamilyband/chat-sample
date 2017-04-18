@@ -41,13 +41,7 @@ public class OembedConfig {
     
     final OembedService oembedService = new OembedService(new DefaultHttpClient(), null, endpoints, "some-app"); 
     oembedService.setAutodiscovery(true);
-    /*if(this.cacheName != null) {
-        oembedService.setCacheName(cacheName);
-    }
-    if(this.defaultCacheAge != null) {
-        oembedService.setDefaultCacheAge(defaultCacheAge);
-    }
-    */
+
     return oembedService;
   }
   

@@ -6,12 +6,8 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.simple.AbstractJdbcInsert;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
@@ -88,7 +84,6 @@ public abstract class AbstractIdDaoMySQL<ObjType extends AbstractIdItem<IdType>,
   public class CountMapper implements RowMapper<Integer> {
     @Override
     public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
-      // TODO Auto-generated method stub
       return rs.getInt("c");
     }
   }

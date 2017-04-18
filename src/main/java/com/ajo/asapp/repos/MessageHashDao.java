@@ -1,10 +1,8 @@
 package com.ajo.asapp.repos;
 
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.TreeSet;
 
 import com.ajo.asapp.entities.User;
 import com.ajo.asapp.entities.message.Message;

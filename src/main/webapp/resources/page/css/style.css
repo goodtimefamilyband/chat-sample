@@ -17,7 +17,6 @@ html, body {
 .app-wrapper {
 	position: relative;
 	display: flex;
-	/* flex-direction: column; */
 	flex: 1;
 	overflow: auto;
 }
@@ -123,17 +122,7 @@ html, body {
 		overflow: hidden;
 	}
 	
-	#messages {
-		/* overflow-x: scroll; */
-	}
-	
 	#notes {
 		flex: 1;
 	}
 }
-
-/*
-#btnDm {
-	margin-right: 3rem;
-}
-*/
