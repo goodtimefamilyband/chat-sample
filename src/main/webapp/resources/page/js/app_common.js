@@ -6,7 +6,6 @@ var msgDiv = document.getElementById('messages');
 var scrolled = false;
 
 var render = function(message) {
-	console.log("Render", message);
 	var msgDiv = $(document.createElement('div'));
 	msgDiv.attr('class', 'message');
 	
@@ -55,7 +54,6 @@ var renderUserMessage = function(message) {
 
 
 $(msgDiv).on('scroll', function() {
-	console.log('scroll', scrolled, msgDiv.scrollHeight, msgDiv.scrollTop);
 	if(msgDiv.scrollHeight - msgDiv.scrollTop != $(msgDiv).height()) {
 		scrolled = true;
 	}
@@ -65,9 +63,7 @@ $(msgDiv).on('scroll', function() {
 });
 
 function scrollDown() {
-	console.log('scrollDown', scrolled, msgDiv.scrollHeight, msgDiv.scrollTop);
 	if(!scrolled) {
-		console.log(scrolled, msgDiv.scrollTop, msgDiv.scrollHeight);
 		msgDiv.scrollTop = msgDiv.scrollHeight;
 	}
 }
@@ -109,7 +105,6 @@ function doModel(model, includeNote, postLast = true) {
 	}
 	scrollDown();
 	var lastMessage = model.messages[model.messages.length - 1];
-	console.log("lastMessage", lastMessage);
 	
 	if(postLast) {
 		postLastSeen(lastMessage.posted);
@@ -125,7 +120,6 @@ function doModel(model, includeNote, postLast = true) {
 $('#msgForm').submit(function() {
 	$(this).ajaxSubmit({
 		success: function(resp, status, xhr, jq) {
-			console.log("submitted")
 			$('#txtMsg').val('').focus();
 		},
 		error: function() {

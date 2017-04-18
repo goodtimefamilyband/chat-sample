@@ -28,14 +28,11 @@ var AsappClient = function(clientopts) {
 	
 	var connectedFxn = function(frame) {
 		this.connected = true;
-		console.log('Connected: ' + frame);
-        this.stompClient.subscribe('/app/messaging', function (data) {
-        	console.log("Subscribe", data, typeof data.body);
+		this.stompClient.subscribe('/app/messaging', function (data) {
         	opts.onMessage(JSON.parse(data.body));
         });
         
         this.stompClient.subscribe("/user/app/messaging", function (data) {
-        	console.log("User message: " + data);
         	opts.onUserMessage(JSON.parse(data.body));
         });
         

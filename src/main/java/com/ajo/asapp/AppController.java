@@ -138,7 +138,6 @@ public class AppController {
       return "app";
     }
     
-    System.out.println("Message count: " + messageDao.getCount());
     model.addAttribute("page", pageNum);
     
     int lastPage = (messageDao.getCount() - 1) / count;
@@ -260,7 +259,6 @@ public class AppController {
   public void postMessage(HttpServletRequest req, 
       @AuthenticationPrincipal User u, 
       @RequestParam("msg") String msg) {
-    System.out.println("Got message "+ msg);
     
     Message m = this.getMessageForText(msg);
     
@@ -336,8 +334,8 @@ public class AppController {
       
     }
     catch (MalformedURLException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      // This is supposed to happen sometimes
+      // e.printStackTrace();
       
     } catch (ClientProtocolException e) {
       // TODO Auto-generated catch block
@@ -350,7 +348,6 @@ public class AppController {
   }
   
   public Message buildMessage(OembedResponse resp) {
-    System.out.println(resp.getType());
     switch(resp.getType()) {
     case MSG_TYPE_IMG:
       ImageMessage im = new ImageMessage();

@@ -6,7 +6,6 @@ var pathArr = window.location.pathname.split("/");
 var userId = pathArr[2];
 var client = new AsappClient({
 	onUserMessage: function (message) {
-		console.log(message);
 		
 		if(message.authorId == userId || message.recipient == userId) {
 	    	showMain(message);
@@ -17,7 +16,6 @@ var client = new AsappClient({
 		
     },
     onModel: function(model) {
-    	console.log(model);
     	doModel(model, function(msg) {
     		return msg.authorId != userId;
     	});
